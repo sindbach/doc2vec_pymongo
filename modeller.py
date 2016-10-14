@@ -77,7 +77,6 @@ class BuildDoc2VecModel(object):
 
         model.save(self.fileoutput)
         self.d2v_model = model
-        self.sentences = sentences
         return 
 
     def score_similiarity(self):
@@ -91,24 +90,6 @@ class BuildDoc2VecModel(object):
             score += sim
 
         print "Jaccard similarity score: ", score/len(self.test_sents)
-
-    def sample_test(self):
-        # print out random test result
-        sentences = self.sentences
-        model = self.d2v_model
-        for i in range(15):
-            docid = np.random.randint(len(sentences))
-            pred_vec = model.infer_vector(sentences[docid].words)
-            actual_tags=sentences[docid].tags
-            #actual_tags = map(lambda x: unmark_tag(x), sentences[docid].tags)
-            pred_tags = model.docvecs.most_similar([pred_vec], topn=3)
-            print "Plots: %s" % (self.sentences[docid].words)
-            #print "Tokens: %s" % (orig_tokens[docid])
-            print "... Actual tags: %s" % (", ".join(actual_tags))
-            #print "... Predicted tags:", map(lambda x: (unmark_tag(x[0]), x[1]), pred_tags)
-            print "... Predicted tags:", pred_tags
-            print "==="
-        return 
 
 def jaccard_similarity(labels, preds):
     lset = set(labels)
@@ -139,8 +120,6 @@ if __name__ == "__main__":
     reader = MongoReader(mongoURI=args.mongoURI, dbName=args.db, collName=args.coll, limit=args.limit)
     builder.build(reader)
     builder.score_similiarity()
-    builder.sample_test()
-
 
 if __name__ == "__main__":
     pass
