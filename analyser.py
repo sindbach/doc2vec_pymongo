@@ -35,7 +35,7 @@ class Doc2VecAnalyser(object):
             pred_vec = self.doc2vec_model.infer_vector(doc.get('texts'))
             pred_tags = self.doc2vec_model.docvecs.most_similar([pred_vec], topn=3)
             _logger.info("Most similar:  %s" % pred_tags)
-            _logger.info("  ")
+            _logger.info("  \n\n ")
         return 
 
 

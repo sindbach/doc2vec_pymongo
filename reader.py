@@ -95,6 +95,7 @@ class MongoReader(Reader):
                 content +=" %s" % (self.get_value(doc.get(f)))
             texts = self.prepare_words(content)
             tags = doc.get(self.key_field).split(',')
+            tags = [t.strip() for t in tags]
             doc = { "texts": texts, "tags": tags, "title": doc.get('Title'), "plot": doc.get('Plot')}
             yield doc
 
