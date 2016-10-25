@@ -50,7 +50,9 @@ class BuildDoc2VecModel(object):
         ''' Build model
             :param reader: source Reader object
         '''
+        # Build LabeledSentence objects from the documents. 
         sentences = [LabeledSentence(words=doc.get('texts'), tags=doc.get('tags')) for doc in reader.iterate()] 
+        
         # Split model into 90/10 training and test
         train_sents, self.test_sents = train_test_split(sentences, test_size=0.1, random_state=42) 
 
