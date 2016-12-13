@@ -122,6 +122,3 @@ if __name__ == "__main__":
     reader = MongoReader(mongoURI=args.mongoURI, dbName=args.db, collName=args.coll, limit=args.limit)
     builder.build(reader)
     builder.score_similiarity()
-
-if __name__ == "__main__":
-    pass
