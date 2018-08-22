@@ -1,24 +1,32 @@
-# Source: src/build_dataset.py
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
+import os
 import json
 import requests
 
-OMDB_URL = "http://www.omdbapi.com/?i=tt%s&plot=full&r=json"
+API_KEY = os.environ.get("OMDB_API")
+OMDB_URL = "http://www.omdbapi.com/?i=tt%s&plot=full&r=json&apikey=%s"
 
-fdata = open("./data/tagged_plots.json", 'wb')
-flink = open("./data/links.csv", 'rb')
-for line in flink:
-    if line.startswith("movieId"):
-        continue
-    mid, imdb_id, _ = line.strip().split(",")
-    resp = requests.get(OMDB_URL % (imdb_id))
-    resp_json = json.loads(resp.text)
-    json.dump(resp_json, fdata)
-    fdata.write("\n")
-flink.close()
-fdata.close()
+def main():
+    fdata = open("./ml-latest-small/tagged_plots.json", 'w')
+    flink = open("./ml-latest-small/links.csv", 'r')
+    for line in flink:
+        if line.startswith("movieId"):
+            continue
+        mid, imdb_id, _ = line.strip().split(",")
+        resp = requests.get(OMDB_URL % (imdb_id, API_KEY))
+        print(resp.text)
+        resp_json = json.loads(resp.text)
+        json.dump(resp_json, fdata)
+        fdata.write("\n")
+    flink.close()
+    fdata.close()
+
+if __name__ == "__main__":
+    main()
 
 
 '''
-mongoimport --db topics --collection movies --file ./data/tagged_plots.json
+mongoimport --db topics --collection movies --file ./ml-latest-small/tagged_plots.json
 '''
