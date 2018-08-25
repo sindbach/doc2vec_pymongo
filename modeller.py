@@ -8,13 +8,13 @@ import os
 from random import shuffle
 from gensim.models.doc2vec import LabeledSentence
 from gensim.models import Doc2Vec
-from sklearn.cross_validation import train_test_split
+from sklearn.model_selection import train_test_split
 from reader import MongoReader
 import numpy as np 
 
 logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.INFO)
 logging.root.level = logging.INFO
-
+_logger = logging.getLogger(__name__)
 
 class BuildDoc2VecModel(object):
     ''' Build Doc2Vec model file. 
@@ -70,11 +70,11 @@ class BuildDoc2VecModel(object):
         min_alpha = 0.001
         alpha_delta = (alpha - min_alpha) / self.numpasses
 
-        for i in xrange(self.numpasses):
+        for i in range(self.numpasses):
             shuffle(sentences)
             model.alpha = alpha
             model.min_alpha = alpha
-            model.train(sentences)
+            model.train(sentences, total_examples=model.corpus_count, epochs=self.numiter)
             alpha -= alpha_delta
 
         model.save(self.fileoutput)
@@ -87,11 +87,14 @@ class BuildDoc2VecModel(object):
         score = 0.0 
         for test_sent in self.test_sents: 
             pred_vec = self.d2v_model.infer_vector(test_sent.words)
-            pred_tags = self.d2v_model.docvecs.most_similar([pred_vec], topn=3)
+            pred_tags = self.d2v_model.docvecs.most_similar([pred_vec], topn=len(test_sent.tags))
+            _logger.info("text: \n", test_sent.words)
+            _logger.info("Predicted tags: \n", pred_tags)
+            _logger.info("Actual tags: \n", test_sent.tags)
             sim = jaccard_similarity(test_sent.tags, [x[0] for x in pred_tags])
             score += sim
 
-        print "Jaccard similarity score: ", score/len(self.test_sents)
+        _logger.info("Jaccard similarity score: ", score/len(self.test_sents))
 
 def jaccard_similarity(labels, preds):
     lset = set(labels)
@@ -101,8 +104,8 @@ def jaccard_similarity(labels, preds):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Doc2Vec model builder.")
     parser.add_argument('--model', help="Specify output model file. default: doc2vec.model", default="./doc2vec.model")
-    parser.add_argument('--db', help="Specify MongoDB db name.")
-    parser.add_argument('--coll', help="Specify MongoDB collection name.")
+    parser.add_argument('--db', help="Specify MongoDB db name.", default="topics")
+    parser.add_argument('--coll', help="Specify MongoDB collection name.", default="movies")
     parser.add_argument('--mongoURI', help="Specify MongoDB URI for different server/ports. default=localhost:27017", default="mongodb://localhost:27017")
     parser.add_argument('--limit', help="Specify the limit of records to read from source. default: None", type=int, default=None)
 
