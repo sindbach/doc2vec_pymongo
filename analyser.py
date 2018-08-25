@@ -14,7 +14,6 @@ logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.INFO)
 logging.root.level = logging.INFO
 _logger = logging.getLogger(__name__)
 
-
 class Doc2VecAnalyser(object):
     def __init__(self, model, reader, topn=3):
         ''' init 
@@ -40,12 +39,12 @@ class Doc2VecAnalyser(object):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Given a model file classify a topic.")
+    parser = argparse.ArgumentParser(description="Given a model file classify a collection.")
     parser.add_argument('--model', help="Specify input model file. default: doc2vec.model", default="./doc2vec.model")
-    parser.add_argument('--db', help="Specify MongoDB db name. default:topics", default='topics')
-    parser.add_argument('--coll', help="Specify MongoDB collection name")
+    parser.add_argument('--db', help="Specify MongoDB db name. default:topics", default="topics")
+    parser.add_argument('--coll', help="Specify MongoDB collection name", default="test")
     parser.add_argument('--mongoURI', help="Specify MongoDB URI for different server/ports", default="mongodb://localhost:27017")
-    parser.add_argument('--limit', help="Specify a number of documents to classify. default:20", type=int, default=20)
+    parser.add_argument('--limit', help="Specify a number of documents to classify. default:10", type=int, default=10)
     parser.add_argument('--topn', help="Specify a number of most similar tags. default:3", type=int, default=3)
     args = parser.parse_args()
 
