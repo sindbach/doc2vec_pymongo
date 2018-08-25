@@ -83,12 +83,18 @@ class MongoReader(Reader):
         if not self.conn: 
             try:
                 self.conn = pymongo.MongoClient(self.mongoURI)[self.dbName][self.collName]
-            except Exception, ex:
+            except Exception as ex:
                 raise Exception("ERROR establishing connection: %s" % ex)
 
-        cursor = self.conn.find({}, self.fields)
         if self.limit: 
-            cursor = cursor.limit(self.limit)
+            projection = {}
+            for key in self.fields:
+                projection[key] = 1
+            cursor = self.conn.aggregate([{"$sample":{"size":self.limit}}, 
+                                          {"$project":projection}])
+        else:
+            cursor = self.conn.find({}, self.fields)
+
         for doc in cursor:
             content = ""
             for f in self.return_fields:
@@ -98,8 +104,6 @@ class MongoReader(Reader):
             tags = [t.strip() for t in tags]
             doc = { "texts": texts, "tags": tags, "title": doc.get('Title'), "plot": doc.get('Plot')}
             yield doc
-
-
 
 if __name__ == "__main__":
     pass
