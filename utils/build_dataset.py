@@ -29,8 +29,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-'''
-mongoimport --db topics --collection movies --file ./ml-latest-small/tagged_plots.json
-'''

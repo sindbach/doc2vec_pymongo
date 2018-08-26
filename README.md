@@ -47,6 +47,8 @@ You can either construct the document yourself, or fetch existing information fr
 
 The example data was collected by fetching movies data from : [MovieLens Latest Datasets](http://grouplens.org/datasets/movielens/latest/). There's a file called `./ml-latest-small/links.csv` that contains `movieId`. This ID can be used to fetch the related movie information from [omdbapi.com](www.omdbapi.com). You would need to register and activate an API key. The site provides 1000 API calls per day for free. 
 
+Use [build_dataset.py](./utils/build_dataset.py) script as an example to fetch more movies data from `omdbapi.com`. The script will output a `json` file that could be imported to MongoDB using `mongoimport`.
+
 ### Building a Model 
 
 The prediction model utilises movie's `Title`, `Plot` and `Actors` fields. 
