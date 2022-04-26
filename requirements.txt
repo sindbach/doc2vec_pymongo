@@ -9,7 +9,7 @@ gensim==3.5.0
 idna==2.7
 jmespath==0.9.3
 nltk==3.3
-numpy==1.11.1
+numpy==1.21.0
 pymongo==3.7.1
 python-dateutil==2.7.3
 requests==2.20
