@@ -7,10 +7,10 @@ Utilising:
 
 Tested with : 
 
-* Python v3.6
-* PyMongo v3.7.1
-* MongoDB v4.0.1
-* GenSim v3.5
+* Python v3.9
+* PyMongo v4.1.1
+* MongoDB v5.0
+* GenSim v4.1
 
 ### Data
 
@@ -76,4 +76,3 @@ INFO : precomputing L2-norms of doc weight vectors
 INFO : Most similar:  [(u'Adventure', 0.5624773502349854), (u'Action', 0.5235205292701721), (u'Animation', 0.5159382820129395)]
 INFO :   
 ```
-
