@@ -5,8 +5,19 @@ import pymongo
 import logging
 import re
 
+import nltk
+nltk.download('stopwords')
+
 from nltk.corpus import stopwords
+
+import nltk
+nltk.download('wordnet')
+
+import nltk
+nltk.download('omw-1.4')
+
 from nltk.stem import WordNetLemmatizer
+
 
 logging.basicConfig(format='%(levelname)s : %(message)s', level=logging.INFO)
 logging.root.level = logging.INFO

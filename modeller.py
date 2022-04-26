@@ -6,7 +6,7 @@ import logging
 import json 
 import os
 from random import shuffle
-from gensim.models.doc2vec import LabeledSentence
+from gensim.models.doc2vec import TaggedDocument
 from gensim.models import Doc2Vec
 from sklearn.model_selection import train_test_split
 from reader import MongoReader
@@ -50,19 +50,19 @@ class BuildDoc2VecModel(object):
         ''' Build model
             :param reader: source Reader object
         '''
-        # Build LabeledSentence objects from the documents. 
-        sentences = [LabeledSentence(words=doc.get('texts'), tags=doc.get('tags')) for doc in reader.iterate()] 
+        # Build TaggedDocument objects from the documents. 
+        sentences = [TaggedDocument(words=doc.get('texts'), tags=doc.get('tags')) for doc in reader.iterate()] 
         
         # Split model into 90/10 training and test
         train_sents, self.test_sents = train_test_split(sentences, test_size=0.1, random_state=42) 
 
         model= Doc2Vec(dm=self.dm, 
-                       size=self.size,
+                       vector_size=self.size,
                        negative=self.negative, 
                        hs=self.hs, 
                        min_count=self.min_count, 
                        workers=self.workers,
-                       iter=self.numiter)
+                       epochs=self.numiter)
 
         model.build_vocab(sentences)
 
@@ -88,13 +88,13 @@ class BuildDoc2VecModel(object):
         for test_sent in self.test_sents: 
             pred_vec = self.d2v_model.infer_vector(test_sent.words)
             pred_tags = self.d2v_model.docvecs.most_similar([pred_vec], topn=len(test_sent.tags))
-            _logger.info("text: \n", test_sent.words)
-            _logger.info("Predicted tags: \n", pred_tags)
-            _logger.info("Actual tags: \n", test_sent.tags)
+            _logger.info("text: %s\n" % test_sent.words)
+            _logger.info("Predicted tags: %s\n" % pred_tags)
+            _logger.info("Actual tags: %s\n" % test_sent.tags)
             sim = jaccard_similarity(test_sent.tags, [x[0] for x in pred_tags])
             score += sim
 
-        _logger.info("Jaccard similarity score: ", score/len(self.test_sents))
+        _logger.info("Jaccard similarity score: %s" % float(float(score)/len(self.test_sents)))
 
 def jaccard_similarity(labels, preds):
     lset = set(labels)

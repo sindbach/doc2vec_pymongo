@@ -5,7 +5,6 @@ import argparse
 import logging
 import json 
 
-from gensim.models.doc2vec import LabeledSentence
 from gensim.models import Doc2Vec
 
 from reader import MongoReader
@@ -55,4 +54,3 @@ if __name__ == "__main__":
     reader = MongoReader(mongoURI=args.mongoURI, dbName=args.db, collName=args.coll, limit=args.limit)
     analyser = Doc2VecAnalyser(model=args.model, reader=reader)
     analyser.analyse()
-
