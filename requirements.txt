@@ -12,7 +12,7 @@ docutils==0.18.1
 gensim==4.1.2
 idna==3.3
 jmespath==1.0.0
-joblib==1.1.0
+joblib==1.2.0
 nltk==3.7
 numpy==1.22.3
 pipupgrade==1.12.0
